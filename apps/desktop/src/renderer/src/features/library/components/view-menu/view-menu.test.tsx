@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { setLibrarySaveGap } from "@/features/library/components/layouts/save-gap";
 import { libraryHeader } from "@/features/library/state/library-header";
 import { setZoom } from "@/features/library/state/view-store";
+import { setDisplayPref } from "@/features/saves";
 import { ViewMenu } from "./";
 
 describe("view menu", () => {
@@ -22,6 +23,7 @@ describe("view menu", () => {
     libraryHeader.closePopover();
     setZoom(130);
     setLibrarySaveGap(16);
+    setDisplayPref("source", true);
     host = document.createElement("div");
     document.body.append(host);
     root = createRoot(host);
@@ -33,6 +35,7 @@ describe("view menu", () => {
     libraryHeader.closePopover();
     setZoom(130);
     setLibrarySaveGap(16);
+    setDisplayPref("source", true);
     vi.unstubAllGlobals();
   });
 
@@ -82,6 +85,7 @@ describe("view menu", () => {
     expect(text).not.toContain("Date Saved");
     expect(text).toContain("Show Sidebar");
     expect(text).toContain("Show Inspector");
+    expect(text).toContain("Show Source Tag");
     expect(text).not.toContain("Show Tags");
     expect(text).not.toContain("Show Annotation");
     expect(text).not.toContain("Show Notes");
@@ -129,5 +133,26 @@ describe("view menu", () => {
 
     expect(window.localStorage.getItem("pond.gridZoom")).toBe("360");
     expect(window.localStorage.getItem("pond.itemGap")).toBe("64");
+  });
+
+  it("lets people hide source tags from display options", async () => {
+    await act(async () => root.render(<ViewMenu />));
+
+    await act(async () => {
+      document
+        .querySelector<HTMLButtonElement>('[aria-label="Display"]')
+        ?.click();
+    });
+
+    const label = Array.from(document.querySelectorAll("label")).find((node) =>
+      node.textContent?.includes("Show Source Tag"),
+    );
+    const toggle = label?.querySelector<HTMLButtonElement>('[role="switch"]');
+    expect(toggle?.getAttribute("aria-checked")).toBe("true");
+
+    await act(async () => toggle?.click());
+
+    expect(toggle?.getAttribute("aria-checked")).toBe("false");
+    expect(window.localStorage.getItem("pond.display.source")).toBe("0");
   });
 });
