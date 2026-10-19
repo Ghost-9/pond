@@ -45,6 +45,7 @@ function createContext({
     reloadLibrary: noOp,
     revealLibrary: noOp,
     sendMenuAction: () => noOp,
+    reportIssue: noOp,
     showLogs: noOp,
     verifyLibrary: noOp,
   };

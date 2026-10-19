@@ -110,9 +110,7 @@ export function buildHelpSection(context: AppMenuContext): AppMenuItem {
       { type: "separator" },
       {
         label: "Report an Issue",
-        click: context.openExternalUrl(
-          "https://github.com/raphaelsalaja/pond/issues",
-        ),
+        click: context.reportIssue,
       },
       {
         label: "Release Notes",

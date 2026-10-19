@@ -11,6 +11,7 @@ import {
   type ShortcutPreferences,
 } from "../../shared/shortcuts";
 import { routeCombineImagesZoom } from "../core/combine-images-window";
+import { bugReportUrl } from "../core/issue-report";
 import { reconcileLibrary } from "../core/scan";
 import { menuAccelerator } from "../lib/menu-accelerator";
 import { libraryRoot } from "../paths";
@@ -84,6 +85,16 @@ export function createAppMenuContext(deps: AppMenuRuntimeDeps): AppMenuContext {
     },
     reloadLibrary: () => {
       deps.focusedOrMain()?.webContents.reload();
+    },
+    reportIssue: () => {
+      void shell.openExternal(
+        bugReportUrl({
+          version: app.getVersion(),
+          platform: process.platform,
+          systemVersion: process.getSystemVersion(),
+          arch: process.arch,
+        }),
+      );
     },
     revealLibrary: () => {
       void shell.openPath(libraryRoot());
